@@ -1,0 +1,22 @@
+variables:
+  IMAGE_NAME: "sofiat1/test_ural:latest"
+
+stages:
+  - check_update
+
+job_check_update:
+  stage: check_update
+  only:
+    - main
+  script: 
+    - |
+      cd /com_docker
+      if [[ `git status --porcelain` ]]; then # Changes
+      echo docker login -u $DOCKER_REGISTRY_USERNAME --password-stdin hub.docker.com/repository/docker/
+      echo $IMAGE_NAME
+      docker build -t $IMAGE_NAME .
+      docker push test_ural:latest
+      else { echo "Job skipped - no changes" }   # No changes
+      fi
+  #tags:
+  #  - runner
